@@ -398,4 +398,4 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
-todo-list/*.json
+todo-list/appsettings*.json
