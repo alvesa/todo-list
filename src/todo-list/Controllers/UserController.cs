@@ -1,6 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using todo_list.domain.domain;
-using todo_list.domain.service;
+using todo_list.Domain.Domain;
+using todo_list.Domain.Service;
 
 namespace todo_list.Controllers
 {
@@ -16,6 +17,7 @@ namespace todo_list.Controllers
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> Get() => Ok(await _service.GetAllAsync());
     
     [HttpGet("{id}")]

@@ -1,8 +1,8 @@
-using todo_list.domain.domain;
+using todo_list.Domain.Domain;
 
-namespace todo_list.domain.service
+namespace todo_list.Domain.Service
 {
-  public interface IUserService : IService<User>
+  public interface IUserService : IDomainService<User>
   {
 
   }

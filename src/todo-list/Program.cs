@@ -1,19 +1,45 @@
-using todo_list.domain.service;
-using todo_list.domain.repository;
-using todo_list.infra.repository;
-using todo_list.infra.context;
+using todo_list.Domain.Service;
+using todo_list.Domain.Repository;
+using todo_list.Infra.Repository;
+using todo_list.Infra.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+var configurations = builder.Configuration;
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Authentication
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(opt => {
+        opt.RequireHttpsMetadata = false;
+        opt.SaveToken = true;
+        var secret = configurations["JwtSettings:secret"];
+        var key = Encoding.UTF8.GetBytes(secret);
+        opt.TokenValidationParameters = new TokenValidationParameters {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+        };
+    });
+
+// Context
 builder.Services.AddDbContext<ITodoContext, TodoContext>(x => x.UseInMemoryDatabase("TodoDb"));
+
+// Service
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+
+// Repository
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 var app = builder.Build();
@@ -26,6 +52,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

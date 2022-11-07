@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using todo_list.domain.domain;
-using todo_list.domain.repository;
-using todo_list.infra.context;
+using todo_list.Domain.Domain;
+using todo_list.Domain.Repository;
+using todo_list.Infra.Context;
 
-namespace todo_list.infra.repository
+namespace todo_list.Infra.Repository
 {
   public class UserRepository : IUserRepository
   {
@@ -43,6 +43,11 @@ namespace todo_list.infra.repository
     public async Task<User?> GetByIdAsync(Guid id)
     {
       return await _context.Users.FindAsync(id);
+    }
+
+    public User Get(Func<User, bool> predicate)
+    {
+      return _context.Users.Where(predicate).FirstOrDefault();
     }
 
     public async Task UpdateAsync(Guid id, User value)

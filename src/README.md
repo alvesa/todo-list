@@ -4,7 +4,10 @@
 
 - Create a api base project :heavy_check_mark:
 - Create authentication
+  - jwt
+  - sso microsoft
 - Create authorization
+- Middleware auth
 - Tests
 - Redis to cache
 - Database with migrations

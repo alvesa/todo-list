@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using todo_list.domain.domain;
+using todo_list.Domain.Domain;
 
-namespace todo_list.infra.context
+namespace todo_list.Infra.Context
 {
   public interface ITodoContext
   {

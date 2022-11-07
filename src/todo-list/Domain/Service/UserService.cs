@@ -1,7 +1,7 @@
-using todo_list.domain.domain;
-using todo_list.domain.repository;
+using todo_list.Domain.Domain;
+using todo_list.Domain.Repository;
 
-namespace todo_list.domain.service
+namespace todo_list.Domain.Service
 {
   public class UserService : IUserService
   {
@@ -30,6 +30,15 @@ namespace todo_list.domain.service
     public async Task<User?> GetByIdAsync(Guid id)
     {
       return await _userRepository.GetByIdAsync(id);
+    }
+
+    public User Get(Func<User, bool> predicate)
+    {
+      if(predicate == null) {
+        throw new ArgumentNullException("");
+      }
+      
+      return _userRepository.Get(predicate);
     }
 
     public async Task UpdateAsync(Guid id, User value)
