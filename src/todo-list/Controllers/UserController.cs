@@ -7,6 +7,7 @@ namespace todo_list.Controllers
 {
   [ApiController]
   [Route("[controller]")]
+  [Authorize]
   public class UserController : ControllerBase
   {
     private readonly IUserService _service;
@@ -17,13 +18,13 @@ namespace todo_list.Controllers
     }
 
     [HttpGet]
-    [Authorize]
     public async Task<IActionResult> Get() => Ok(await _service.GetAllAsync());
     
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id) => Ok(await _service.GetByIdAsync(id));
     
     [HttpPost]
+    [AllowAnonymous]
     public async Task<IActionResult> Add([FromBody] User user)
     {
       var id = await _service.AddAsync(user);

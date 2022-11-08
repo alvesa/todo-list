@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using todo_list.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
 var configurations = builder.Configuration;
@@ -54,6 +55,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
+app.UseAuthenticationMiddleware();
 
 app.UseAuthorization();
 

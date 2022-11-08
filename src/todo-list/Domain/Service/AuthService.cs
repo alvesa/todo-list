@@ -9,11 +9,20 @@ namespace todo_list.Domain.Service
   {
     private readonly IConfiguration _configuration;
     private readonly IUserService _user;
+    public string Secret { get; private set; }
+    public SymmetricSecurityKey Key { get; private set; }
 
     public AuthService(IConfiguration configuration, IUserService user)
     {
       _configuration = configuration;
       _user = user;
+      Initialize();
+    }
+
+    private void Initialize() 
+    {
+      Secret = _configuration["JwtSettings:secret"];
+      SetKey(Secret);
     }
 
     public string GetToken(string email, string password)
@@ -23,20 +32,20 @@ namespace todo_list.Domain.Service
 
     private string CreateToken(string email, string password)
     {
+      var handler = new JwtSecurityTokenHandler();
       var user = _user.Get(x => x.Email == email && x.Password == password);
 
       if(user == null)
         throw new ArgumentException("Invalid credentials");
 
       var token = GetSecurityToken(user.Name, user.Email);
-      return new JwtSecurityTokenHandler().WriteToken(token);
+      return handler.WriteToken(token);
     }
 
     private JwtSecurityToken GetSecurityToken(string name, string email)
     {
-      var secret = _configuration["JwtSettings:secret"];
-      var key = GetKey(secret);
-      var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
+      var credentials = new SigningCredentials(Key, SecurityAlgorithms.HmacSha256Signature);
+
       return new JwtSecurityToken(
         claims: new List<Claim> {
           new Claim("name", name),
@@ -47,9 +56,6 @@ namespace todo_list.Domain.Service
       );
     }
 
-    private SecurityKey GetKey(string secret)
-    {
-      return new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
-    }
+    private void SetKey(string secret) => Key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
   }
 }
