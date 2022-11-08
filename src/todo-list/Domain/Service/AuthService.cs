@@ -30,6 +30,26 @@ namespace todo_list.Domain.Service
       return CreateToken(email, password);
     }
 
+    public bool IsTokenValid(string token)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var validationParameters = GetValidationParameters();
+
+        var principalClaims = tokenHandler.ValidateToken(token.Split(' ').Last(), validationParameters, out SecurityToken validatedToken);
+        return true;
+    }
+
+    private TokenValidationParameters GetValidationParameters()
+    {
+        return new TokenValidationParameters()
+        {
+          ValidateIssuerSigningKey = true,
+          IssuerSigningKey = Key,
+          ValidateIssuer = false,
+          ValidateAudience = false,
+        };
+    }
+
     private string CreateToken(string email, string password)
     {
       var handler = new JwtSecurityTokenHandler();

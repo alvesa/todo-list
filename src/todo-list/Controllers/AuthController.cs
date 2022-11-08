@@ -7,7 +7,6 @@ namespace todo_list.Controllers
 {
   [ApiController]
   [Route("[controller]")]
-  [AllowAnonymous]
   public class AuthController : ControllerBase
   {
     private readonly IAuthService _authService;
@@ -18,6 +17,7 @@ namespace todo_list.Controllers
     }
 
     [HttpPost]
+    [AllowAnonymous]
     public IActionResult Auth([FromBody] AuthRequest request)
     {
       if (request == null)
