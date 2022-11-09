@@ -6,13 +6,13 @@
 - Create authentication
   - jwt :heavy_check_mark:
   - sso microsoft
-- Middleware auth
+- Middleware auth :heavy_check_mark:
+- Exception middleware
 - Create authorization
 - Tests
 - Redis to cache
 - Database with migrations
 - Pipeline work pattern
-- Exception listener
 - Create Docker
 - Create pipeline
 - Scalate the service

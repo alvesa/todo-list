@@ -3,7 +3,7 @@ using todo_list.Domain.Service;
 
 namespace todo_list.Middleware
 {
-  public class AuthenticationMiddleware
+    public class AuthenticationMiddleware
     {
         private readonly RequestDelegate _next;
 
