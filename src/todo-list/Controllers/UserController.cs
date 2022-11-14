@@ -18,9 +18,11 @@ namespace todo_list.Controllers
     }
 
     [HttpGet]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Get() => Ok(await _service.GetAllAsync());
     
     [HttpGet("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetById(Guid id) => Ok(await _service.GetByIdAsync(id));
     
     [HttpPost]
@@ -33,6 +35,7 @@ namespace todo_list.Controllers
     }
 
     [HttpPut]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Update(Guid id, [FromBody] User user)
     {
       var userEntity = await _service.GetByIdAsync(id);

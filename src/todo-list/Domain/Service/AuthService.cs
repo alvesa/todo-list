@@ -2,6 +2,7 @@ using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using todo_list.domain.Enum;
 
 namespace todo_list.Domain.Service
 {
@@ -9,20 +10,13 @@ namespace todo_list.Domain.Service
   {
     private readonly IConfiguration _configuration;
     private readonly IUserService _user;
-    public string Secret { get; private set; }
     public SymmetricSecurityKey Key { get; private set; }
 
     public AuthService(IConfiguration configuration, IUserService user)
     {
       _configuration = configuration;
       _user = user;
-      Initialize();
-    }
-
-    private void Initialize() 
-    {
-      Secret = _configuration["JwtSettings:secret"];
-      SetKey(Secret);
+      Key = GetKey(_configuration["JwtSettings:secret"]);
     }
 
     public string GetToken(string email, string password)
@@ -58,11 +52,11 @@ namespace todo_list.Domain.Service
       if(user == null)
         throw new ArgumentException("Invalid credentials");
 
-      var token = GetSecurityToken(user.Name, user.Email);
+      var token = GetSecurityToken(user.Name, user.Email, user.Role);
       return handler.WriteToken(token);
     }
 
-    private JwtSecurityToken GetSecurityToken(string name, string email)
+    private JwtSecurityToken GetSecurityToken(string name, string email, Role role)
     {
       var credentials = new SigningCredentials(Key, SecurityAlgorithms.HmacSha256Signature);
 
@@ -70,12 +64,15 @@ namespace todo_list.Domain.Service
         claims: new List<Claim> {
           new Claim("name", name),
           new Claim("email", email),
+          new Claim("role", role.ToString()),
         },
         signingCredentials: credentials,
         expires: DateTime.Now.AddMinutes(10)
       );
     }
 
-    private void SetKey(string secret) => Key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
+    private SymmetricSecurityKey GetKey(string secret) {
+     return new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
+    }
   }
 }
